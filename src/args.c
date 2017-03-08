@@ -295,6 +295,16 @@ int args_parse(shadowvpn_args_t *args, int argc, char **argv) {
       case 'c':
         args->conf_file = strdup(optarg);
         break;
+      case 'w':
+        if (strcmp("start", optarg) == 0)
+          args->is_start = true;
+        else if (strcmp("stop", optarg) == 0)
+          args->is_start = false;
+        else {
+          errf("unknown command %s", optarg);
+          print_help();
+        }
+        break;
       case 'v':
         verbose_mode = 1;
         break;
