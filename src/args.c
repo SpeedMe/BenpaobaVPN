@@ -297,9 +297,9 @@ int args_parse(shadowvpn_args_t *args, int argc, char **argv) {
         break;
       case 'w':
         if (strcmp("start", optarg) == 0)
-          args->is_start = true;
+          args->is_start = 1;
         else if (strcmp("stop", optarg) == 0)
-          args->is_start = false;
+          args->is_start = 0;
         else {
           errf("unknown command %s", optarg);
           print_help();

@@ -65,7 +65,7 @@ typedef struct {
 #endif
 
   // windows client cmd is_start -w start -w stop
-  bool is_start;
+  int is_start;
 } shadowvpn_args_t;
 
 int args_parse(shadowvpn_args_t *args, int argc, char **argv);
