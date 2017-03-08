@@ -278,7 +278,7 @@ static void load_default_args(shadowvpn_args_t *args) {
 int args_parse(shadowvpn_args_t *args, int argc, char **argv) {
   int ch;
   bzero(args, sizeof(shadowvpn_args_t));
-  while ((ch = getopt(argc, argv, "hs:c:v")) != -1) {
+  while ((ch = getopt(argc, argv, "hs:c:w:v")) != -1) {
     switch (ch) {
       case 's':
         if (strcmp("start", optarg) == 0)
