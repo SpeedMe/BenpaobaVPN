@@ -96,7 +96,7 @@ int main(int argc, char **argv) {
 //    errf("can not set control handler");
 //    return EXIT_FAILURE;
 //  }
-  if (0 == args->is_start)
+  if (0 == args.is_start)
   {
     vpn_stop(&vpn_ctx);
     return TRUE;
