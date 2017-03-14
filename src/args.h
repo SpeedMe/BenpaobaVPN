@@ -63,9 +63,6 @@ typedef struct {
   int tun_mask;
   int tun_port;
 #endif
-
-  // windows client cmd is_start -w start -w stop
-  int is_start;
 } shadowvpn_args_t;
 
 int args_parse(shadowvpn_args_t *args, int argc, char **argv);
