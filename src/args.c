@@ -278,7 +278,7 @@ static void load_default_args(shadowvpn_args_t *args) {
 int args_parse(shadowvpn_args_t *args, int argc, char **argv) {
   int ch;
   bzero(args, sizeof(shadowvpn_args_t));
-  while ((ch = getopt(argc, argv, "hs:c:v")) != -1) {
+  while ((ch = getopt(argc, argv, "hs:c:i:u:t:v")) != -1) {
     switch (ch) {
       case 's':
         if (strcmp("start", optarg) == 0)
@@ -295,15 +295,47 @@ int args_parse(shadowvpn_args_t *args, int argc, char **argv) {
       case 'c':
         args->conf_file = strdup(optarg);
         break;
+      case 'i':
+        args->server = strdup(optarg);
+        break;
+      case 'u':
+        parse_user_tokens(args, strdup(optarg));
+        break;
+      case 't':
+        args->tun_ip = strdup(optarg);
+        break;
       case 'v':
         verbose_mode = 1;
         break;
-       default:
+      default:
         print_help();
     }
   }
-  if (!args->conf_file)
-    print_help();
-  load_default_args(args);
-  return parse_config_file(args, args->conf_file);
+  if (!args->conf_file){
+    load_default_args(args);
+    args->port = 1123;
+    if (-1 == setenv("password", "benpaobaHLZY0430", 1)) {
+      err("setenv");
+      return -1;
+    }
+    args->mode = SHADOWVPN_MODE_CLIENT;
+    long mtu = 1440;
+    // RFC 791
+    // in order to wrap packet of length 68, MTU should be > 68 + overhead
+    if (mtu < 68 + SHADOWVPN_OVERHEAD_LEN) {
+      errf("MTU %ld is too small", mtu);
+      return -1;
+    }
+    if (mtu > MAX_MTU) {
+      errf("MTU %ld is too large", mtu);
+      return -1;
+    }
+    args->mtu = mtu;
+    args->intf = strdup("benpaoba");
+    args->up_script = strdup("client_up.bat");
+    args->down_script = strdup("client_down.bat");
+  } else{
+    load_default_args(args);
+    return parse_config_file(args, args->conf_file);
+  }
 }
