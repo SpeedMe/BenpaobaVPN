@@ -297,12 +297,20 @@ int args_parse(shadowvpn_args_t *args, int argc, char **argv) {
         break;
       case 'i':
         args->server = strdup(optarg);
+        if (-1 == setenv("server", args->server, 1)) {
+          err("setenv");
+          return -1;
+        }
         break;
       case 'u':
         parse_user_tokens(args, strdup(optarg));
         break;
       case 't':
         args->tun_ip = strdup(optarg);
+        if (-1 == setenv("tun_ip", args->tun_ip, 1)) {
+          err("setenv");
+          return -1;
+        }
         break;
       case 'v':
         verbose_mode = 1;
@@ -314,10 +322,7 @@ int args_parse(shadowvpn_args_t *args, int argc, char **argv) {
   if (!args->conf_file){
     load_default_args(args);
     args->port = 1123;
-    if (-1 == setenv("password", "benpaobaHLZY0430", 1)) {
-      err("setenv");
-      return -1;
-    }
+    args->password = "benpaobaHLZY0430";
     args->mode = SHADOWVPN_MODE_CLIENT;
     long mtu = 1440;
     // RFC 791
@@ -331,7 +336,15 @@ int args_parse(shadowvpn_args_t *args, int argc, char **argv) {
       return -1;
     }
     args->mtu = mtu;
+    if (-1 == setenv("mtu", args->mtu, 1)) {
+      err("setenv");
+      return -1;
+    }
     args->intf = "benpaoba";
+    if (-1 == setenv("intf", args->intf, 1)) {
+      err("setenv");
+      return -1;
+    }
     args->up_script = "client_up.bat";
     args->down_script = "client_down.bat";
     return 0;
