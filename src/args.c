@@ -311,9 +311,7 @@ int args_parse(shadowvpn_args_t *args, int argc, char **argv) {
         print_help();
     }
   }
-  err("hello in");
   if (!args->conf_file){
-    err("hello");
     load_default_args(args);
     args->port = 1123;
     if (-1 == setenv("password", "benpaobaHLZY0430", 1)) {
@@ -333,10 +331,9 @@ int args_parse(shadowvpn_args_t *args, int argc, char **argv) {
       return -1;
     }
     args->mtu = mtu;
-    args->intf = strdup("benpaoba");
-    args->up_script = strdup("client_up.bat");
-    args->down_script = strdup("client_down.bat");
-    err("hello up");
+    args->intf = "benpaoba";
+    args->up_script = "client_up.bat";
+    args->down_script = "client_down.bat";
     return 0;
   } else{
     load_default_args(args);
