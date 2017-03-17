@@ -196,8 +196,6 @@ static int process_key_value(shadowvpn_args_t *args, const char *key,
     }
   } else if (strcmp("password", key) == 0) {
     args->password = strdup(value);
-  } else if (strcmp("user_token", key) == 0) {
-    parse_user_tokens(args, strdup(value));
   }
 #ifndef TARGET_WIN32
   else if (strcmp("net", key) == 0) {
@@ -295,22 +293,8 @@ int args_parse(shadowvpn_args_t *args, int argc, char **argv) {
       case 'c':
         args->conf_file = strdup(optarg);
         break;
-      case 'i':
-        args->server = strdup(optarg);
-        if (-1 == setenv("server", args->server, 1)) {
-          err("setenv");
-          return -1;
-        }
-        break;
       case 'u':
         parse_user_tokens(args, strdup(optarg));
-        break;
-      case 't':
-        args->tun_ip = strdup(optarg);
-        if (-1 == setenv("tun_ip", args->tun_ip, 1)) {
-          err("setenv");
-          return -1;
-        }
         break;
       case 'v':
         verbose_mode = 1;
@@ -320,36 +304,9 @@ int args_parse(shadowvpn_args_t *args, int argc, char **argv) {
     }
   }
   if (!args->conf_file){
-    load_default_args(args);
-    args->port = 1123;
-    args->password = "benpaobaHLZY0430";
-    args->mode = SHADOWVPN_MODE_CLIENT;
-    long mtu = 1440;
-    // RFC 791
-    // in order to wrap packet of length 68, MTU should be > 68 + overhead
-    if (mtu < 68 + SHADOWVPN_OVERHEAD_LEN) {
-      errf("MTU %ld is too small", mtu);
-      return -1;
-    }
-    if (mtu > MAX_MTU) {
-      errf("MTU %ld is too large", mtu);
-      return -1;
-    }
-    args->mtu = mtu;
-    if (-1 == setenv("mtu", args->mtu, 1)) {
-      err("setenv");
-      return -1;
-    }
-    args->intf = "benpaoba";
-    if (-1 == setenv("intf", args->intf, 1)) {
-      err("setenv");
-      return -1;
-    }
-    args->up_script = "client_up.bat";
-    args->down_script = "client_down.bat";
-    return 0;
-  } else{
-    load_default_args(args);
-    return parse_config_file(args, args->conf_file);
+    print_help();
   }
+
+  load_default_args(args);
+  return parse_config_file(args, args->conf_file);
 }
