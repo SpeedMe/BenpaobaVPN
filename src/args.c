@@ -240,9 +240,7 @@ static int process_key_value(shadowvpn_args_t *args, const char *key,
     args->down_script = strdup(value);
   }
 #ifdef TARGET_WIN32
-  else if (strcmp("tunip", key) == 0) {
-    args->tun_ip = strdup(value);
-  } else if (strcmp("tunmask", key) == 0) {
+  else if (strcmp("tunmask", key) == 0) {
     args->tun_mask = (int) atol(value);
   } else if (strcmp("tunport", key) == 0) {
     args->tun_port = (int) atol(value);
@@ -294,6 +292,13 @@ int args_parse(shadowvpn_args_t *args, int argc, char **argv) {
       case 'i':
         args->server = strdup(optarg);
         if (-1 == setenv("server", args->server, 1)) {
+          err("setenv");
+          return -1;
+        }
+        break;
+      case 't':
+        args->tun_ip = strdup(optarg);
+        if (-1 == setenv("tun_ip", args->tun_ip, 1)) {
           err("setenv");
           return -1;
         }
