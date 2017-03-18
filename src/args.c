@@ -170,13 +170,17 @@ static int parse_user_tokens(shadowvpn_args_t *args, char *value) {
 
 static int process_key_value(shadowvpn_args_t *args, const char *key,
                       const char *value) {
-  // set environment variables so that up/down script can
-  // make use of these values
-  if (-1 == setenv(key, value, 1)) {
-    err("setenv");
-    return -1;
+  if (strcmp("password", key) != 0) {
+    // set environment variables so that up/down script can
+    // make use of these values
+    if (-1 == setenv(key, value, 1)) {
+      err("setenv");
+      return -1;
+    }
   }
-  if (strcmp("port", key) == 0) {
+  if (strcmp("server", key) == 0) {
+    args->server = strdup(value);
+  } else if (strcmp("port", key) == 0) {
     args->port = atol(value);
   } else if (strcmp("concurrency", key) == 0) {
     errf("warning: concurrency is temporarily disabled on this version, "
@@ -270,7 +274,7 @@ static void load_default_args(shadowvpn_args_t *args) {
 int args_parse(shadowvpn_args_t *args, int argc, char **argv) {
   int ch;
   bzero(args, sizeof(shadowvpn_args_t));
-  while ((ch = getopt(argc, argv, "hs:c:i:u:v")) != -1) {
+  while ((ch = getopt(argc, argv, "hs:c:i:u:t:v")) != -1) {
     switch (ch) {
       case 's':
         if (strcmp("start", optarg) == 0)
@@ -289,10 +293,9 @@ int args_parse(shadowvpn_args_t *args, int argc, char **argv) {
         break;
       case 'i':
         args->server = strdup(optarg);
-        if (-1 == setenv('server', args->server, 1)) {
-          err("setenv");
-          return -1;
-        }
+        break;
+      case 't':
+        args->tun_ip = strdup(optarg);
         break;
       case 'u':
         parse_user_tokens(args, strdup(optarg));
