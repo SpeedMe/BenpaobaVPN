@@ -298,7 +298,7 @@ int args_parse(shadowvpn_args_t *args, int argc, char **argv) {
         break;
       case 't':
         args->tun_ip = strdup(optarg);
-        if (-1 == setenv("tun_ip", args->tun_ip, 1)) {
+        if (-1 == setenv("tunip", args->tun_ip, 1)) {
           err("setenv");
           return -1;
         }
