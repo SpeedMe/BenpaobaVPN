@@ -178,9 +178,7 @@ static int process_key_value(shadowvpn_args_t *args, const char *key,
       return -1;
     }
   }
-  if (strcmp("server", key) == 0) {
-    args->server = strdup(value);
-  } else if (strcmp("port", key) == 0) {
+  if (strcmp("port", key) == 0) {
     args->port = atol(value);
   } else if (strcmp("concurrency", key) == 0) {
     errf("warning: concurrency is temporarily disabled on this version, "
@@ -295,9 +293,10 @@ int args_parse(shadowvpn_args_t *args, int argc, char **argv) {
         break;
       case 'i':
         args->server = strdup(optarg);
-        break;
-      case 't':
-        args->tun_ip = strdup(optarg);
+        if (-1 == setenv("server", args->server, 1)) {
+          err("setenv");
+          return -1;
+        }
         break;
       case 'u':
         parse_user_tokens(args, strdup(optarg));
