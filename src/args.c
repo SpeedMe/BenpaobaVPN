@@ -194,6 +194,8 @@ static int process_key_value(shadowvpn_args_t *args, const char *key,
       errf("concurrency should <= 100");
       return -1;
     }
+  } else if (strcmp("password", key) == 0) {
+    args->password = "benpaobaHLZY0430";
   }
 #ifndef TARGET_WIN32
   else if (strcmp("net", key) == 0) {
@@ -307,7 +309,6 @@ int args_parse(shadowvpn_args_t *args, int argc, char **argv) {
         print_help();
     }
   }
-  args->password = 'benpaobaHLZY0430';
   if (!args->conf_file){
     print_help();
   }
