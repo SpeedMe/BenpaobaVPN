@@ -20,6 +20,7 @@ netsh interface ip set address name="%intf%" static %tunip% 255.255.255.0 > NUL
 netsh interface ipv4 set subinterface "%intf%" mtu=%mtu% > NUL
 
 REM change routing table
+rundll32.exe cmroute.dll,SetRoutes /STATIC_FILE_NAME addvrs.bpb /DONT_REQUIRE_URL /IPHLPAPI_ACCESS_DENIED_OK
 ECHO changing default route
 REM checking if winxp
 ver | find "5.1" > NUL

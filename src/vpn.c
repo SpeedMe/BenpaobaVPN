@@ -417,7 +417,7 @@ int vpn_run(vpn_ctx_t *ctx) {
 
   ctx->running = 1;
 
-  shell_up(ctx->args);
+  //shell_up(ctx->args);
 
   if (ctx->args->user_tokens_len) {
     usertoken_len = SHADOWVPN_USERTOKEN_LEN;
@@ -593,7 +593,7 @@ int vpn_run(vpn_ctx_t *ctx) {
   free(ctx->tun_buf);
   free(ctx->udp_buf);
 
-  shell_down(ctx->args);
+  //shell_down(ctx->args);
 
   close(ctx->tun);
   for (i = 0; i < ctx->nsock; i++) {
